@@ -1,125 +1,66 @@
 using System;
-// importing i/o for streamwriter and streamreader
 using System.IO;
-using System.Collections.Generic;
-
 class Program
 {
     static void Main()
     {
-        // get and validate the user's input for low number
-        double lowNumber = GetPositiveDouble("please enter a low number: ", "low number must be positive");
-
-        // get and validate the user's input for high number
-        double highNumber = GetHighNumber("please enter a high number: ", "high number must be greater than low number", lowNumber);
-
-        // calculate the difference between highnumber and lownumber
-        double difference = highNumber - lowNumber;
-
-        // giving an output of highnumber, lownumber and the difference between the two
+        // prompting user for low and high numbers and calculating the difference
+        int lowNumber = GetPositiveInt("please enter a low number: ", "low number must be positive.");
+        int highNumber = GetHighNumber("please enter a high number: ", "high number must be greater than the low number.", lowNumber);
+        
+        // getting the difference between the high number and low number
+        int difference = highNumber - lowNumber;
         Console.WriteLine($"the difference between {highNumber} and {lowNumber} is {difference}");
 
-        // making a list to store numbers
-        List<double> numbers = new List<double>();
-        for (double i = lowNumber; i <= highNumber; i++)
+        //using arrays and file i/o
+        int size = highNumber - lowNumber + 1;
+        int[] numbers = new int[size];
+        for (int i = 0; i < size; i++)
         {
-            numbers.Add(i);
+            numbers[i] = lowNumber + i;
         }
-
-        // sending the list of numbers to a text file called "numbers.txt"
+        // sending the output to a text file
         string filePath = "numbers.txt";
-        // streamwriter will write the numbers from highest to lowest
         using (StreamWriter writer = new StreamWriter(filePath))
         {
-            for (int i = numbers.Count - 1; i >= 0; i--)
+            for (int i = numbers.Length - 1; i >= 0; i--)
             {
                 writer.WriteLine(numbers[i]);
             }
         }
-
-        // reading numbers back from the file and calculating the sum
-        double sum = 0;
-        using (StreamReader reader = new StreamReader(filePath))
-        {
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (double.TryParse(line, out double number))
-                {
-                    sum += number;
-                }
-            }
-        }
-
-        // printing the sum of the numbers
-        Console.WriteLine($"the sum of the numbers is {sum}");
-
-        // identifying and printing prime numbers
-        Console.WriteLine("prime numbers between low and high numbers:");
-        for (double i = lowNumber; i <= highNumber; i++)
-        {
-            if (IsPrime(i))
-            {
-                Console.WriteLine(i);
-            }
-        }
     }
 
-    // method to get a positive double from the user
-    static double GetPositiveDouble(string prompt, string errorMessage)
+    // method to get a positive int from the user
+    static int GetPositiveInt(string prompt, string errorMessage)
     {
-        double number;
+        int number;
         do
         {
             Console.WriteLine(prompt);
-            // try to parse the input as a double
-            if (double.TryParse(Console.ReadLine(), out number) && number >= 0)
+            if (int.TryParse(Console.ReadLine(), out number) && number >= 0)
             {
                 break;
             }
-            // print error message if input is not a positive double
             Console.WriteLine(errorMessage);
-        } while (true);
+        } while (true); // continue looping until a valid positive integer is entered
 
         return number;
     }
 
-    // method to get a high number greater than lownumber from the user
-    static double GetHighNumber(string prompt, string errorMessage, double lowNumber)
+    // method to get a high number greater than low number from the user
+    static int GetHighNumber(string prompt, string errorMessage, int lowNumber)
     {
-        double number;
+        int number;
         do
         {
             Console.WriteLine(prompt);
-            // try to parse the input as a double
-            if (double.TryParse(Console.ReadLine(), out number) && number > lowNumber)
+            if (int.TryParse(Console.ReadLine(), out number) && number > lowNumber)
             {
                 break;
             }
-            // print error message if input is not greater than lownumber
             Console.WriteLine(errorMessage);
-        } while (true);
+        } while (true); // continue looping until a valid integer greater than lowNumber is entered
 
         return number;
-    }
-
-    // method to check if a number is prime
-    static bool IsPrime(double number)
-    {
-        if (number < 2)
-        {
-            return false;
-        }
-
-        // check for factors other than 1 and the number itself
-        for (double i = 2; i <= Math.Sqrt(number); i++)
-        {
-            if (number % i == 0)
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
